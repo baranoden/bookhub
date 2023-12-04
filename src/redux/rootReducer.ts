@@ -1,7 +1,6 @@
-import { counterReducer } from './counter/slice';
+import { combineReducers } from '@reduxjs/toolkit'
+import dashboardSlice from '../pages/Dashboard/store/slice'
 
-const rootReducer = {
-  counter: counterReducer,
-};
-
-export default rootReducer;
+export const rootReducer = combineReducers({
+  dashboardSlice,
+})

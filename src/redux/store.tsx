@@ -1,27 +1,18 @@
-import { configureStore } from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-import rootReducer from './rootReducer';
-import rootSaga from './rootSaga';
+import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+import { rootReducer } from './rootReducer'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { rootSaga } from './rootSaga'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const configureAppStore = (initialState = {}) => {
-  const reduxSagaMonitorOptions = {};
-  const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+const sagaMiddleware = createSagaMiddleware()
 
-  const middleware = [sagaMiddleware];
+export const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
+export const application = {
+  api: 'https://www.googleapis.com/books/v1/',
+}
+sagaMiddleware.run(rootSaga)
 
-  const store = configureStore({
-    reducer: rootReducer,
-    middleware: (gDM) => gDM().concat([...middleware]),
-    preloadedState: initialState,
-    devTools: process.env.NODE_ENV !== 'production',
-  });
-
-  sagaMiddleware.run(rootSaga);
-  return store;
-};
-
-export const store = configureAppStore();
-
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
