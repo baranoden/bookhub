@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -11,6 +11,9 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
+
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import SearchInput from '../../components/SearchInput/SearchInput'
 
 const pages = ['Bilim Kurgu', 'Gerilim', 'Tarih']
 const settings = ['Giriş Yap', 'Logout']
@@ -106,9 +109,10 @@ const NavBar = (): JSX.Element => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              fontSize: 22,
             }}
           >
-            BookHub
+            BH
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -121,10 +125,10 @@ const NavBar = (): JSX.Element => {
               </Button>
             ))}
           </Box>
-
+          <SearchInput />
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 0 }}>
                 <Avatar alt="Baran" src="#" />
               </IconButton>
             </Tooltip>
@@ -151,6 +155,9 @@ const NavBar = (): JSX.Element => {
               ))}
             </Menu>
           </Box>
+          <Avatar sx={{ p: 0, mr: 0.5, ml: 0.5 }}>
+            <ShoppingCartIcon />
+          </Avatar>
         </Toolbar>
       </Container>
     </AppBar>

@@ -7,7 +7,6 @@ import noImage from '../../assets/img/no-image.jpg'
 import { Box, Grid, Rating } from '@mui/material'
 
 const MiniCard = ({ item }) => {
-  console.log(item)
   return (
     <Grid item sx={{ width: 350, margin: 1 }}>
       <Card
@@ -24,7 +23,7 @@ const MiniCard = ({ item }) => {
               <Typography variant="subtitle1" color="text.secondary" component="div">
                 {item.volumeInfo.authors ? item.volumeInfo.authors[0] : 'Anonim'}
               </Typography>
-              <Rating readOnly value={Math.floor(Math.random() * (5 - 1)) + 1} />
+              <Rating readOnly value={Math.floor(Math.random() * (6 - 0))} />
               <Typography variant="subtitle1" color="text.secondary" component="div">
                 {item.saleInfo.saleability !== 'NOT_FOR_SALE'
                   ? item.saleInfo.listPrice.amount + ' ' + item.saleInfo.listPrice.currencyCode
