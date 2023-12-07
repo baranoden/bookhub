@@ -19,13 +19,16 @@ const SearchInput = () => {
       search: Yup.string().required('Arama yapmak için en az 3 harf giriniz...'),
     }),
     onSubmit: (values) => {
-      navigate(`/search/${values.search}`, { state: { search: values.search }, replace: true })
+      navigate(`/search/${values.search}`, { state: { search: values.search } })
     },
   })
 
   return (
     <>
-      <Avatar onClick={() => setSearchIcon(!searchIcon)} sx={{ p: 0, mr: 0.5 }}>
+      <Avatar
+        sx={{ background: 'yellow', color: 'black', p: 0, mr: 0.5, cursor: 'pointer' }}
+        onClick={() => setSearchIcon(!searchIcon)}
+      >
         <SearchIcon />
       </Avatar>
       <TextField

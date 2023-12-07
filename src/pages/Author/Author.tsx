@@ -16,7 +16,7 @@ import { isNumber } from '../../functions/isNumber'
 import { dashboardTypes } from '../Dashboard/store/type'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-const Category = (): JSX.Element => {
+const Author = (): JSX.Element => {
   const dispatch = useDispatch()
   const dashboardSlice: any = useAppSelector((state) => state.dashboardSlice)
   const [books, setBooks] = useState([])
@@ -36,13 +36,13 @@ const Category = (): JSX.Element => {
 
   useEffect(() => {
     dispatch({
-      type: dashboardTypes.CATEGORY_VIEW,
+      type: dashboardTypes.AUTHOR_VIEW,
       payload: {
         page: isNumber(startIndex) ? startIndex : 0,
-        category: location?.state?.category?.toLowerCase(),
+        author: location?.state?.author?.replace(/\s+/g, '-'),
       },
     })
-    if (location?.state?.category === undefined) {
+    if (location?.state?.author === undefined) {
       navigate('/')
     }
   }, [currentPage, location])
@@ -51,10 +51,10 @@ const Category = (): JSX.Element => {
     <Grid container sx={{ mt: 3 }}>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Typography variant="h3" component="h3">
-          Kategori: {location?.state?.category}
+          Yazar: {location?.state?.author}
         </Typography>
-        <Divider /> Sadece Mevcut Kitapları göster:{' '}
-        <Switch onChange={() => setAvailable(!available)} />
+        <Divider />
+        Sadece Mevcut Kitapları göster: <Switch onChange={() => setAvailable(!available)} />
         <Divider />
       </Grid>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -94,4 +94,4 @@ const Category = (): JSX.Element => {
   )
 }
 
-export default Category
+export default Author

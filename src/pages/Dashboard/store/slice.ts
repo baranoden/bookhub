@@ -1,10 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
-
-const initialState = {
+type IState = {
+  data: any[]
+  loading: boolean
+  success: boolean
+  products: any[]
+}
+const initialState: IState = {
   data: [],
   loading: false,
   success: false,
-  user: {},
+  products: [],
 }
 const dashboardSlice = createSlice({
   name: 'dashboardSlice',
@@ -22,7 +27,14 @@ const dashboardSlice = createSlice({
     getUserData: (state, action) => {
       state.success = action.payload
     },
+    setProducts: (state, action) => {
+      state.products.push(action.payload)
+    },
+    removeProducts: (state, action) => {
+      state.products = state.products.filter((item) => item.id !== action.payload)
+    },
   },
 })
-export const { getUserData, getBooks, setSuccess, setLoading } = dashboardSlice.actions
+export const { getUserData, getBooks, setSuccess, setLoading, setProducts, removeProducts } =
+  dashboardSlice.actions
 export default dashboardSlice.reducer

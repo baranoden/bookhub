@@ -17,24 +17,32 @@ import Login from '../../components/Login/Login'
 import { useAppSelector } from '../../redux/store'
 import toast from 'react-hot-toast'
 import { PersonPinCircleOutlined } from '@mui/icons-material'
+import Cart from '../../components/Cart/Cart'
+import { Badge } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-const pages = ['Bilim Kurgu', 'Gerilim', 'Tarih']
+const pages = [
+  { name: 'Bilim Kurgu', search: 'fiction' },
+  { name: 'Gerilim', search: 'thriller' },
+  { name: 'Tarih', search: 'history' },
+]
 
 const NavBar = (): JSX.Element => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+  const [anchorElCart, setAnchorElCart] = useState<null | HTMLElement>(null)
   const [loginModal, setLoginModal] = useState<boolean>(false)
   const dashboardSlice = useAppSelector((state) => state.dashboardSlice)
   const [canLogin, setCanLogin] = useState(false)
+  const products = useAppSelector((state) => state.dashboardSlice.products)
+  const navigate = useNavigate()
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
   }
   const handleUserMenu = (event, type, state, action) => {
-    console.log(event, type, state, action)
     if (state === 'modal') {
       setLoginModal(true)
-      console.log('^+^+3434')
     }
     if (type === 'open') {
       setAnchorElUser(event?.currentTarget)
@@ -48,15 +56,27 @@ const NavBar = (): JSX.Element => {
     }
   }
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (genre) => {
     setAnchorElNav(null)
+    navigate(`/category/${genre}`, { state: { category: genre } })
   }
+
+  const handleCartOpen = (event: React.MouseEvent<any>) => {
+    setAnchorElCart(event?.currentTarget)
+  }
+
+  const handleCartClose = () => {
+    setAnchorElCart(null)
+  }
+
+  const cartOpen = Boolean(anchorElCart)
+  const cartId = cartOpen ? 'simple-popover' : undefined
 
   const getUser = () => {
     const user = localStorage.getItem('user')
 
     if (user !== null) {
-      return setCanLogin(user == 'success' ? true : false)
+      return setCanLogin(user === 'success' ? true : false)
     }
 
     return null
@@ -69,7 +89,14 @@ const NavBar = (): JSX.Element => {
   }, [dashboardSlice.success])
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="static"
+      sx={{
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+        background: 'white',
+        color: 'black',
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -99,7 +126,7 @@ const NavBar = (): JSX.Element => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              <MenuIcon sx={{ p: 0, mr: 0.5, ml: 0.5, color: 'black', cursor: 'pointer' }} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -119,9 +146,9 @@ const NavBar = (): JSX.Element => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={() => handleCloseNavMenu(page.search)}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -138,7 +165,7 @@ const NavBar = (): JSX.Element => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'inherit',
+              color: 'black',
               textDecoration: 'none',
               fontSize: 22,
             }}
@@ -146,13 +173,13 @@ const NavBar = (): JSX.Element => {
             BH
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages.map((page, index) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                key={index}
+                onClick={() => handleCloseNavMenu(page.search)}
+                sx={{ my: 2, color: 'black', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
@@ -163,7 +190,16 @@ const NavBar = (): JSX.Element => {
                 onClick={(e) => handleUserMenu(e, 'open', null, null)}
                 sx={{ p: 0, ml: 0 }}
               >
-                <Avatar sx={{ p: 0, mr: 0.5, ml: 0.5 }}>
+                <Avatar
+                  sx={{
+                    p: 0,
+                    mr: 0.5,
+                    ml: 0.5,
+                    background: 'yellow',
+                    color: 'black',
+                    cursor: 'pointer',
+                  }}
+                >
                   <PersonPinCircleOutlined />
                 </Avatar>
               </IconButton>
@@ -196,9 +232,25 @@ const NavBar = (): JSX.Element => {
             </Menu>
           </Box>
           {canLogin && (
-            <Avatar sx={{ p: 0, mr: 0.5, ml: 0.5 }}>
-              <ShoppingCartIcon />
-            </Avatar>
+            <Badge
+              sx={{ p: 0, mr: 0.5, ml: 0.5 }}
+              badgeContent={products ? products.length : 0}
+              color="error"
+            >
+              <Avatar sx={{ background: 'yellow', color: 'black', cursor: 'pointer' }}>
+                <ShoppingCartIcon
+                  aria-describedby={cartId}
+                  onClick={(e: React.MouseEvent<any>) => handleCartOpen(e)}
+                />
+
+                <Cart
+                  open={cartOpen}
+                  handleClose={handleCartClose}
+                  anchorEl={anchorElCart}
+                  products={products}
+                />
+              </Avatar>
+            </Badge>
           )}
         </Toolbar>
       </Container>

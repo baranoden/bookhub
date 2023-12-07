@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Backdrop, Box, CircularProgress, Grid, Pagination } from '@mui/material'
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  Divider,
+  Grid,
+  Pagination,
+  Switch,
+  Typography,
+} from '@mui/material'
 import MiniCard from '../../components/MiniCard/MiniCard'
 import { useDispatch } from 'react-redux'
 import { dashboardTypes } from './store/type'
@@ -16,6 +25,7 @@ const Dashboard = (): JSX.Element => {
   const [totalItems, setTotalItems] = useState(0)
   const startIndex = (currentPage - 1) * itemsPerPage
   const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const [available, setAvailable] = useState(false)
 
   useEffect(() => {
     setBooks(dashboardSlice.data.items)
@@ -26,7 +36,7 @@ const Dashboard = (): JSX.Element => {
     dispatch({
       type: dashboardTypes.GET_PRODUCTS,
       payload: {
-        page: isNumber(currentPage) ? currentPage * itemsPerPage : 0,
+        page: isNumber(startIndex) ? startIndex : 0,
       },
     })
   }, [currentPage])
@@ -38,9 +48,34 @@ const Dashboard = (): JSX.Element => {
   }, [dashboardSlice.success])
 
   return (
-    <Grid container sx={{ mt: 3 }}>
+    <Grid container sx={{ mt: 3, boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+      <Grid
+        item
+        sm={12}
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography variant="h3" component="h3">
+          Öne Çıkan Kitaplar
+        </Typography>
+        <Divider />
+        <Typography
+          variant="body1"
+          component="span"
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          Sadece Mevcut Kitapları göster:
+        </Typography>
+        <Switch onChange={() => setAvailable(!available)} />
+        <Divider />
+      </Grid>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {books?.map((item) => <MiniCard item={item} />)}
+        {books?.map((item: any) => <MiniCard item={item} available={available} />)}
       </Grid>
       <Box
         sx={{

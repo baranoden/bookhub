@@ -3,6 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from '../layout/Layout';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Search from '../pages/Search/Search';
+import Category from '../pages/Category/Category';
+import Author from '../pages/Author/Author';
 
 
 const Router = ():JSX.Element => {
@@ -12,6 +14,8 @@ const Router = ():JSX.Element => {
         <Route index element={<Dashboard />} />
         <Route path="*" element={<Dashboard />} />
         <Route path="/search/:value" element={<Search />} />
+        <Route path="/category/:value" element={<Category />} />
+        <Route path="/author/:value" element={<Author />} />
       </Route>
     </Routes>
   );

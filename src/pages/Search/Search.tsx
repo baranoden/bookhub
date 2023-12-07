@@ -6,6 +6,7 @@ import {
   Divider,
   Grid,
   Pagination,
+  Switch,
   Typography,
 } from '@mui/material'
 import MiniCard from '../../components/MiniCard/MiniCard'
@@ -25,6 +26,7 @@ const Search = (props): JSX.Element => {
   const startIndex = (currentPage - 1) * itemsPerPage
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const location = useLocation()
+  const [available, setAvailable] = useState(false)
 
   useEffect(() => {
     setBooks(dashboardSlice.data.items)
@@ -48,9 +50,13 @@ const Search = (props): JSX.Element => {
           Arama Sonucu: {location.state.search}
         </Typography>
         <Divider />
+        <Typography variant="body1" component="span">
+          Sadece Mevcut Kitapları göster: <Switch onChange={() => setAvailable(!available)} />
+        </Typography>
+        <Divider />
       </Grid>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {books?.map((item) => <MiniCard item={item} />)}
+        {books?.map((item) => <MiniCard item={item} available={available} />)}
       </Grid>
       <Box
         sx={{
