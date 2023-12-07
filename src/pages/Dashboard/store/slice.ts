@@ -4,6 +4,7 @@ const initialState = {
   data: [],
   loading: false,
   success: false,
+  user: {},
 }
 const dashboardSlice = createSlice({
   name: 'dashboardSlice',
@@ -18,7 +19,10 @@ const dashboardSlice = createSlice({
     setSuccess: (state, action) => {
       state.success = action.payload
     },
+    getUserData: (state, action) => {
+      state.success = action.payload
+    },
   },
 })
-export const { getBooks, setSuccess, setLoading } = dashboardSlice.actions
+export const { getUserData, getBooks, setSuccess, setLoading } = dashboardSlice.actions
 export default dashboardSlice.reducer

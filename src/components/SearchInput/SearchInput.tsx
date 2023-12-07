@@ -13,13 +13,13 @@ const SearchInput = () => {
     search: '',
   }
 
-  const { handleSubmit, setFieldValue, values, errors, touched } = useFormik({
+  const { handleSubmit, setFieldValue, values } = useFormik({
     initialValues: initialValues,
     validationSchema: Yup.object({
       search: Yup.string().required('Arama yapmak için en az 3 harf giriniz...'),
     }),
     onSubmit: (values) => {
-      navigate(`/search/${values.search}`)
+      navigate(`/search/${values.search}`, { state: { search: values.search }, replace: true })
     },
   })
 

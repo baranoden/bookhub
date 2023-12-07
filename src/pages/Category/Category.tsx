@@ -15,7 +15,7 @@ import { isNumber } from '../../functions/isNumber'
 import { dashboardTypes } from '../Dashboard/store/type'
 import { useLocation } from 'react-router-dom'
 
-const Search = (props): JSX.Element => {
+const Category = (props): JSX.Element => {
   const dispatch = useDispatch()
   const dashboardSlice: any = useAppSelector((state) => state.dashboardSlice)
   const [books, setBooks] = useState([])
@@ -32,11 +32,15 @@ const Search = (props): JSX.Element => {
   }, [dashboardSlice])
 
   useEffect(() => {
+    console.log(startIndex, 'baran')
+  }, [startIndex])
+
+  useEffect(() => {
     dispatch({
       type: dashboardTypes.SEARCH_PRODUCTS,
       payload: {
         page: isNumber(startIndex) ? startIndex : 0,
-        search: location.state.search,
+        category: 'fiction',
       },
     })
   }, [currentPage, location])
@@ -86,4 +90,4 @@ const Search = (props): JSX.Element => {
   )
 }
 
-export default Search
+export default Category

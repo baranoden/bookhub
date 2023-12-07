@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import noImage from '../../assets/img/no-image.jpg'
-import { Box, Grid, Rating } from '@mui/material'
+import { Box, Button, Grid, Rating } from '@mui/material'
 
 const MiniCard = ({ item }) => {
   return (
@@ -25,10 +25,11 @@ const MiniCard = ({ item }) => {
               </Typography>
               <Rating readOnly value={Math.floor(Math.random() * (6 - 0))} />
               <Typography variant="subtitle1" color="text.secondary" component="div">
-                {item.saleInfo.saleability !== 'NOT_FOR_SALE'
-                  ? item.saleInfo.listPrice.amount + ' ' + item.saleInfo.listPrice.currencyCode
+                {item.saleInfo?.saleability !== 'NOT_FOR_SALE'
+                  ? item.saleInfo?.listPrice?.amount + ' ' + item?.saleInfo?.listPrice?.currencyCode
                   : 'Mevcut Değil'}
               </Typography>
+              <Button>Sepete Ekle</Button>
             </CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}></Box>
           </Box>
