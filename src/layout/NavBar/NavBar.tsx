@@ -20,6 +20,8 @@ import { PersonPinCircleOutlined } from '@mui/icons-material'
 import Cart from '../../components/Cart/Cart'
 import { Badge } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setCartOnLoad } from '../../pages/Dashboard/store/slice'
 
 const pages = [
   { name: 'Bilim Kurgu', search: 'fiction' },
@@ -36,6 +38,7 @@ const NavBar = (): JSX.Element => {
   const [canLogin, setCanLogin] = useState(false)
   const products = useAppSelector((state) => state.dashboardSlice.products)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -87,6 +90,10 @@ const NavBar = (): JSX.Element => {
       getUser()
     }
   }, [dashboardSlice.success])
+
+  useEffect(() => {
+    dispatch(setCartOnLoad(JSON.parse(localStorage.getItem('cart') as string)))
+  }, [])
 
   return (
     <AppBar
@@ -157,7 +164,7 @@ const NavBar = (): JSX.Element => {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -185,7 +192,7 @@ const NavBar = (): JSX.Element => {
           </Box>
           <SearchInput />
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Seçenekler">
               <IconButton
                 onClick={(e) => handleUserMenu(e, 'open', null, null)}
                 sx={{ p: 0, ml: 0 }}

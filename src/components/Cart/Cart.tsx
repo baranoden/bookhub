@@ -15,7 +15,7 @@ import { useAppSelector } from '../../redux/store'
 import noImage from '../../assets/img/no-image.jpg'
 import ClearIcon from '@mui/icons-material/Clear'
 import { useDispatch } from 'react-redux'
-import { removeProducts } from '../../pages/Dashboard/store/slice'
+import { removeProducts, resetLocalStorage } from '../../pages/Dashboard/store/slice'
 
 const Cart = ({ anchorEl, open, handleClose, products }) => {
   const productSlice = useAppSelector((state) => state.dashboardSlice.products)
@@ -29,7 +29,7 @@ const Cart = ({ anchorEl, open, handleClose, products }) => {
         totalPrice += saleInfo.listPrice.amount
       }
     }
-    return totalPrice
+    return totalPrice.toFixed(2)
   }
 
   return (
@@ -91,9 +91,9 @@ const Cart = ({ anchorEl, open, handleClose, products }) => {
                       </>
                     }
                   />
-                  <Button sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                  <Button sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <ClearIcon
-                      sx={{ background: 'yellow', color: 'black', p: 1, borderRadius: '50%' }}
+                      sx={{ background: 'yellow', color: 'black', p: 0.35, borderRadius: '50%' }}
                       onClick={() => {
                         dispatch(removeProducts(item.id))
                       }}
@@ -116,7 +116,12 @@ const Cart = ({ anchorEl, open, handleClose, products }) => {
         {'Toplam:' + calculateTotalPrice() + 'TL'}
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', m: 1 }}>
-        <Button variant="outlined">Satın Al</Button>
+        <Button sx={{ m: 1 }} variant="outlined" onClick={() => dispatch(resetLocalStorage())}>
+          Sepeti Boşalt
+        </Button>
+        <Button sx={{ m: 1 }} variant="contained">
+          Satın Al
+        </Button>
       </Box>
     </Menu>
   )

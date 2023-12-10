@@ -75,7 +75,15 @@ const Dashboard = (): JSX.Element => {
         <Divider />
       </Grid>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {books?.map((item: any) => <MiniCard item={item} available={available} />)}
+        {books?.map((item: any) => {
+          if (available) {
+            if (item.saleInfo.saleability !== 'NOT_FOR_SALE') {
+              return <MiniCard item={item} />
+            }
+          } else {
+            return <MiniCard item={item} />
+          }
+        })}
       </Grid>
       <Box
         sx={{

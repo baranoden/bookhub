@@ -6,7 +6,7 @@ import NavBar from './NavBar/NavBar'
 export const Layout = (): JSX.Element => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ mt: 1 }}>
         <NavBar />
       </Container>
       <Container maxWidth="xl">

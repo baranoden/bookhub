@@ -5,4 +5,5 @@ export const dashboardTypes = {
   AUTHOR_VIEW: 'AUTHOR_VIEW',
   POST_LOGIN: 'POST_LOGIN',
   ADD_TO_CART: 'ADD_TO_CART',
+  SINGLE_VIEW: 'SINGLE_VIEW',
 }

@@ -3,17 +3,31 @@ import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
 import noImage from '../../assets/img/no-image.jpg'
-import { Box, Button, Chip, Grid, Rating } from '@mui/material'
+import { Box, Button, Chip, Grid } from '@mui/material'
 import { ShoppingCartCheckout } from '@mui/icons-material'
 import { dashboardTypes } from '../../pages/Dashboard/store/type'
 import { useDispatch } from 'react-redux'
 import { useAppSelector } from '../../redux/store'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
-const MiniCard = ({ item, available }) => {
+const MiniCard = ({ item }) => {
   const dispatch = useDispatch()
   const products = useAppSelector((state) => state.dashboardSlice.products)
+  const user = useAppSelector((state) => state.dashboardSlice)
   const navigate = useNavigate()
+
+  const navigateToDetails = (id) => {
+    navigate(`/book/${id}`, { state: { id: id }, replace: true })
+  }
+  const availabilityCheck = () => {
+    if (item.saleInfo?.saleability === 'NOT_FOR_SALE') {
+      return false
+    } else if (item.saleInfo?.saleability === 'FREE') {
+      return false
+    }
+    return true
+  }
 
   return (
     <Grid
@@ -41,8 +55,15 @@ const MiniCard = ({ item, available }) => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography component="div" variant="h5" sx={{ fontWeight: 500, fontSize: 18 }}>
-              {item.volumeInfo.title}
+            <Typography
+              component="div"
+              variant="h5"
+              sx={{ fontWeight: 500, fontSize: 18, cursor: 'pointer' }}
+              onClick={() => navigateToDetails(item.id)}
+            >
+              {item.volumeInfo.title.length > 40
+                ? item.volumeInfo.title.slice(0, 40)
+                : item.volumeInfo.title}
             </Typography>
             <Typography
               onClick={() => {
@@ -74,21 +95,35 @@ const MiniCard = ({ item, available }) => {
               }}
             />
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              {item.saleInfo?.saleability !== 'NOT_FOR_SALE'
+              {availabilityCheck()
                 ? item.saleInfo?.listPrice?.amount + ' ' + item?.saleInfo?.listPrice?.currencyCode
-                : 'Mevcut Değil'}
+                : 'Uygun Değil'}
             </Typography>
-            {item.saleInfo?.saleability !== 'NOT_FOR_SALE' && (
-              <Button sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+            {!products.find((el) => el.id === item.id) ? (
+              !availabilityCheck() ? (
+                <></>
+              ) : (
                 <ShoppingCartCheckout
-                  sx={{ background: 'yellow', color: 'black', p: 1, borderRadius: '50%' }}
+                  sx={{
+                    background: 'yellow',
+                    color: 'black',
+                    p: 0.3,
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                  }}
                   onClick={() => {
                     if (!products.find((el) => el.id === item.id)) {
                       dispatch({ type: dashboardTypes.ADD_TO_CART, payload: item })
+                    } else {
+                      toast.error('Bu eşya sepetinizde zaten mevcut.')
                     }
                   }}
                 />
-              </Button>
+              )
+            ) : (
+              <Typography variant="subtitle1" color="text.secondary" component="div">
+                Bu kitap sepetinizde zaten mevcut
+              </Typography>
             )}
           </Box>
           <CardMedia
@@ -100,6 +135,7 @@ const MiniCard = ({ item, available }) => {
             }
             sx={{ width: '150px !important' }}
             height="240"
+            onClick={() => navigateToDetails(item.id)}
           />
         </Box>
       </Card>

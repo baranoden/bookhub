@@ -48,17 +48,42 @@ const Author = (): JSX.Element => {
   }, [currentPage, location])
 
   return (
-    <Grid container sx={{ mt: 3 }}>
-      <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+    <Grid container sx={{ mt: 3, boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+      <Grid
+        item
+        sm={12}
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Typography variant="h3" component="h3">
           Yazar: {location?.state?.author}
         </Typography>
         <Divider />
-        Sadece Mevcut Kitapları göster: <Switch onChange={() => setAvailable(!available)} />
+        <Typography
+          variant="body1"
+          component="span"
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          Sadece Mevcut Kitapları göster:
+        </Typography>
+        <Switch onChange={() => setAvailable(!available)} />
         <Divider />
       </Grid>
       <Grid item sm={12} sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {books?.map((item) => <MiniCard item={item} available={available} />)}
+        {books?.map((item: any) => {
+          if (available) {
+            if (item.saleInfo.saleability !== 'NOT_FOR_SALE') {
+              return <MiniCard item={item} />
+            }
+          } else {
+            return <MiniCard item={item} />
+          }
+        })}
       </Grid>
       <Box
         sx={{
