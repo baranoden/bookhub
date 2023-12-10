@@ -21,7 +21,7 @@ import Cart from '../../components/Cart/Cart'
 import { Badge } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { setCartOnLoad } from '../../pages/Dashboard/store/slice'
+import { getUserData, setCartOnLoad } from '../../pages/Dashboard/store/slice'
 
 const pages = [
   { name: 'Bilim Kurgu', search: 'fiction' },
@@ -35,7 +35,6 @@ const NavBar = (): JSX.Element => {
   const [anchorElCart, setAnchorElCart] = useState<null | HTMLElement>(null)
   const [loginModal, setLoginModal] = useState<boolean>(false)
   const dashboardSlice = useAppSelector((state) => state.dashboardSlice)
-  const [canLogin, setCanLogin] = useState(false)
   const products = useAppSelector((state) => state.dashboardSlice.products)
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -53,13 +52,17 @@ const NavBar = (): JSX.Element => {
       setAnchorElUser(null)
     }
     if (action === 'logout') {
-      setCanLogin(false)
-      localStorage.setItem('user', 'failure')
+      dispatch(getUserData(false))
+      localStorage.setItem('user', 'error')
       toast.success('Başarıyla çıkış yapıldı')
     }
   }
 
-  const handleCloseNavMenu = (genre) => {
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
+  }
+
+  const navigateHandler = (genre) => {
     setAnchorElNav(null)
     navigate(`/category/${genre}`, { state: { category: genre } })
   }
@@ -78,18 +81,12 @@ const NavBar = (): JSX.Element => {
   const getUser = () => {
     const user = localStorage.getItem('user')
 
-    if (user !== null) {
-      return setCanLogin(user === 'success' ? true : false)
-    }
-
-    return null
+    dispatch(getUserData(user === 'success' ? true : false))
   }
 
   useEffect(() => {
-    if (dashboardSlice.success) {
-      getUser()
-    }
-  }, [dashboardSlice.success])
+    getUser()
+  }, [dashboardSlice.user])
 
   useEffect(() => {
     dispatch(setCartOnLoad(JSON.parse(localStorage.getItem('cart') as string)))
@@ -109,8 +106,6 @@ const NavBar = (): JSX.Element => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -118,16 +113,15 @@ const NavBar = (): JSX.Element => {
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
-              textDecoration: 'none',
             }}
+            onClick={() => navigate('/')}
           >
             BookHub
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -154,7 +148,7 @@ const NavBar = (): JSX.Element => {
               }}
             >
               {pages.map((page, index) => (
-                <MenuItem key={index} onClick={() => handleCloseNavMenu(page.search)}>
+                <MenuItem key={index} onClick={() => navigateHandler(page.search)}>
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
@@ -163,8 +157,6 @@ const NavBar = (): JSX.Element => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -173,9 +165,9 @@ const NavBar = (): JSX.Element => {
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'black',
-              textDecoration: 'none',
               fontSize: 22,
             }}
+            onClick={() => navigate('/')}
           >
             BH
           </Typography>
@@ -183,7 +175,7 @@ const NavBar = (): JSX.Element => {
             {pages.map((page, index) => (
               <Button
                 key={index}
-                onClick={() => handleCloseNavMenu(page.search)}
+                onClick={() => navigateHandler(page.search)}
                 sx={{ my: 2, color: 'black', display: 'block' }}
               >
                 {page.name}
@@ -227,7 +219,7 @@ const NavBar = (): JSX.Element => {
               open={Boolean(anchorElUser)}
               onClose={() => handleUserMenu(null, 'close', null, null)}
             >
-              {canLogin ? (
+              {dashboardSlice.user ? (
                 <MenuItem key={2} onClick={(e) => handleUserMenu(e, null, null, 'logout')}>
                   <Typography textAlign="center">Çıkış Yap</Typography>
                 </MenuItem>
@@ -238,27 +230,25 @@ const NavBar = (): JSX.Element => {
               )}
             </Menu>
           </Box>
-          {canLogin && (
-            <Badge
-              sx={{ p: 0, mr: 0.5, ml: 0.5 }}
-              badgeContent={products ? products.length : 0}
-              color="error"
-            >
-              <Avatar sx={{ background: 'yellow', color: 'black', cursor: 'pointer' }}>
-                <ShoppingCartIcon
-                  aria-describedby={cartId}
-                  onClick={(e: React.MouseEvent<any>) => handleCartOpen(e)}
-                />
+          <Badge
+            sx={{ p: 0, mr: 0.5, ml: 0.5 }}
+            badgeContent={products ? products.length : 0}
+            color="error"
+          >
+            <Avatar sx={{ background: 'yellow', color: 'black', cursor: 'pointer' }}>
+              <ShoppingCartIcon
+                aria-describedby={cartId}
+                onClick={(e: React.MouseEvent<any>) => handleCartOpen(e)}
+              />
 
-                <Cart
-                  open={cartOpen}
-                  handleClose={handleCartClose}
-                  anchorEl={anchorElCart}
-                  products={products}
-                />
-              </Avatar>
-            </Badge>
-          )}
+              <Cart
+                open={cartOpen}
+                handleClose={handleCartClose}
+                anchorEl={anchorElCart}
+                products={products}
+              />
+            </Avatar>
+          </Badge>
         </Toolbar>
       </Container>
       {loginModal && <Login open={loginModal} setOpen={setLoginModal} />}

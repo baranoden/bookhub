@@ -60,7 +60,7 @@ const Author = (): JSX.Element => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="h3" component="h3">
+        <Typography variant="h3" component="h3" textAlign="center">
           Yazar: {location?.state?.author}
         </Typography>
         <Divider />

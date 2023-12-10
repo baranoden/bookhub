@@ -60,7 +60,7 @@ const Dashboard = (): JSX.Element => {
           alignItems: 'center',
         }}
       >
-        <Typography variant="h3" component="h3">
+        <Typography variant="h3" component="h3" textAlign={'center'}>
           Öne Çıkan Kitaplar
         </Typography>
         <Divider />

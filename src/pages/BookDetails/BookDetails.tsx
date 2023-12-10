@@ -20,9 +20,11 @@ import noImage from '../../assets/img/no-image.jpg'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import ShareIcon from '@mui/icons-material/Share'
 import NotFound from '../../layout/NotFound/NotFound'
+import { availabilityCheck } from '../../functions/availabilityCheck'
 
 const BookDetails = () => {
   const singleBookDetails = useAppSelector((state) => state.dashboardSlice.single)
+  const products = useAppSelector((state) => state.dashboardSlice.products)
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate = useNavigate()
@@ -72,20 +74,22 @@ const BookDetails = () => {
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {singleBookDetails?.volumeInfo?.categories
-              ? singleBookDetails?.volumeInfo?.categories?.map((item) => {
-                  return (
+              ? singleBookDetails?.volumeInfo?.categories?.map((category, index) => {
+                  const subcategories = category.split(' / ')
+
+                  return subcategories.map((subcategory) => (
                     <Chip
                       sx={{ cursor: 'pointer', m: 1 }}
-                      label={item}
+                      label={subcategory}
                       variant="outlined"
                       onClick={() => {
-                        navigate(`/category/${item}`, {
-                          state: { category: item },
+                        navigate(`/category/${subcategory}`, {
+                          state: { category: subcategory },
                           replace: true,
                         })
                       }}
                     />
-                  )
+                  ))
                 })
               : 'Kategori Yok'}
           </Typography>
@@ -94,17 +98,34 @@ const BookDetails = () => {
           </Typography>
           <div dangerouslySetInnerHTML={{ __html: singleBookDetails?.volumeInfo?.description }} />
         </CardContent>
-        <Typography sx={{ ml: 2 }} gutterBottom variant="h5" component="div">
-          {singleBookDetails?.saleInfo?.saleability !== 'NOT_FOR_SALE'
-            ? singleBookDetails?.saleInfo?.listPrice?.amount +
-              ' ' +
-              singleBookDetails?.saleInfo?.listPrice?.currencyCode
-            : 'Mevcut Değil'}
-        </Typography>
         <CardActions disableSpacing>
-          <IconButton aria-label="sepet">
-            <ShoppingCartCheckout />
-          </IconButton>
+          <Typography sx={{ ml: 2 }} gutterBottom variant="h5" component="div">
+            {availabilityCheck(singleBookDetails)
+              ? singleBookDetails.saleInfo?.listPrice?.amount +
+                ' ' +
+                singleBookDetails?.saleInfo?.listPrice?.currencyCode
+              : 'Uygun Değil'}
+          </Typography>
+          {!products.find((el) => el.id === singleBookDetails.id) ? (
+            !availabilityCheck(singleBookDetails) ? (
+              <></>
+            ) : (
+              <IconButton aria-label="sepet">
+                <ShoppingCartCheckout
+                  onClick={() => {
+                    if (!products.find((el) => el.id === singleBookDetails.id)) {
+                      dispatch({ type: dashboardTypes.ADD_TO_CART, payload: singleBookDetails })
+                    }
+                  }}
+                />
+              </IconButton>
+            )
+          ) : (
+            <Typography variant="subtitle1" color="text.secondary" component="div">
+              Bu kitap sepetinizde zaten mevcut
+            </Typography>
+          )}
+
           <IconButton aria-label="paylaş">
             <ShareIcon />
           </IconButton>

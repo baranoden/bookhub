@@ -22,7 +22,7 @@ const Login = ({ open, setOpen }) => {
     handleSubmit()
   }
   const dispatch = useDispatch()
-  const { handleSubmit, handleChange, values, touched, errors, handleBlur } = useFormik({
+  const { handleSubmit, handleChange, touched, errors } = useFormik({
     initialValues: {
       username: '',
       password: '',
@@ -39,10 +39,10 @@ const Login = ({ open, setOpen }) => {
     },
   })
   useEffect(() => {
-    if (userLogin.success) {
+    if (userLogin.user) {
       setOpen(false)
     }
-  }, [userLogin.success])
+  }, [userLogin.user])
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
       <DialogTitle>Giriş Yap</DialogTitle>

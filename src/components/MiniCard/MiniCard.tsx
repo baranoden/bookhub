@@ -10,23 +10,15 @@ import { useDispatch } from 'react-redux'
 import { useAppSelector } from '../../redux/store'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { availabilityCheck } from '../../functions/availabilityCheck'
 
 const MiniCard = ({ item }) => {
   const dispatch = useDispatch()
   const products = useAppSelector((state) => state.dashboardSlice.products)
-  const user = useAppSelector((state) => state.dashboardSlice)
   const navigate = useNavigate()
 
   const navigateToDetails = (id) => {
     navigate(`/book/${id}`, { state: { id: id }, replace: true })
-  }
-  const availabilityCheck = () => {
-    if (item.saleInfo?.saleability === 'NOT_FOR_SALE') {
-      return false
-    } else if (item.saleInfo?.saleability === 'FREE') {
-      return false
-    }
-    return true
   }
 
   return (
@@ -95,12 +87,12 @@ const MiniCard = ({ item }) => {
               }}
             />
             <Typography variant="subtitle1" color="text.secondary" component="div">
-              {availabilityCheck()
+              {availabilityCheck(item)
                 ? item.saleInfo?.listPrice?.amount + ' ' + item?.saleInfo?.listPrice?.currencyCode
                 : 'Uygun Değil'}
             </Typography>
             {!products.find((el) => el.id === item.id) ? (
-              !availabilityCheck() ? (
+              !availabilityCheck(item) ? (
                 <></>
               ) : (
                 <ShoppingCartCheckout
@@ -114,8 +106,6 @@ const MiniCard = ({ item }) => {
                   onClick={() => {
                     if (!products.find((el) => el.id === item.id)) {
                       dispatch({ type: dashboardTypes.ADD_TO_CART, payload: item })
-                    } else {
-                      toast.error('Bu eşya sepetinizde zaten mevcut.')
                     }
                   }}
                 />
@@ -129,11 +119,11 @@ const MiniCard = ({ item }) => {
           <CardMedia
             component="img"
             image={
-              item.volumeInfo.imageLinks?.smallThumbnail
-                ? item.volumeInfo.imageLinks?.smallThumbnail
+              item.volumeInfo?.imageLinks?.smallThumbnail
+                ? item.volumeInfo?.imageLinks?.smallThumbnail
                 : noImage
             }
-            sx={{ width: '150px !important' }}
+            sx={{ width: '150px !important', cursor: 'pointer' }}
             height="240"
             onClick={() => navigateToDetails(item.id)}
           />

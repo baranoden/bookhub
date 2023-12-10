@@ -5,7 +5,20 @@ type IState = {
   success: boolean
   products: any[]
   single: any
-  user: any
+  user: boolean
+  shipment: {
+    firstName: string
+    lastName: string
+    address: string
+    city: string
+    district: string
+  }
+  payment: {
+    cardHolder: string
+    cardNumber: string
+    expDate: string
+    cvv: string
+  }
 }
 const initialState: IState = {
   data: [],
@@ -13,7 +26,9 @@ const initialState: IState = {
   success: false,
   products: [],
   single: {},
-  user: {},
+  user: false,
+  shipment: { firstName: '', lastName: '', address: '', city: '', district: '' },
+  payment: { cardHolder: '', cardNumber: '', expDate: '', cvv: '' },
 }
 const dashboardSlice = createSlice({
   name: 'dashboardSlice',
@@ -29,8 +44,8 @@ const dashboardSlice = createSlice({
       state.success = action.payload
     },
     getUserData: (state, action) => {
-      state.success = action.payload.success
-      state.user = action.payload.user
+      state.user = action.payload
+      state.success = action.payload
     },
     setProducts: (state, action) => {
       state.products.push(action.payload)
@@ -47,8 +62,14 @@ const dashboardSlice = createSlice({
       action.payload?.map((item) => state.products.push(item))
     },
     resetLocalStorage: (state) => {
-      localStorage.clear()
+      localStorage.removeItem('cart')
       state.products = []
+    },
+    setShipment: (state, action) => {
+      state.shipment = action.payload
+    },
+    setPayment: (state, action) => {
+      state.payment = action.payload
     },
   },
 })
@@ -62,5 +83,7 @@ export const {
   getSingleBook,
   setCartOnLoad,
   resetLocalStorage,
+  setShipment,
+  setPayment,
 } = dashboardSlice.actions
 export default dashboardSlice.reducer
