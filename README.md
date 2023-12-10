@@ -30,6 +30,8 @@ A simple bookstore application, which you can login, and purchase books with goo
    code .
    ```
 
+   if not keep going with these lines
+
    ```
    npm install
    ```
